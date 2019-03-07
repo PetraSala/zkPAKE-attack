@@ -25,12 +25,11 @@ from math import ceil
 
 #zkPAKE protocol
 #testing offline dictionary attack
-def protocol(seed=0):
+def protocol():
     #set size Groups
     #Group 1: 1024-bit MODP Group with 160-bit Prime Order Subgroup
     #Group 2: 2048-bit MODP Group with 224-bit Prime Order Subgroup
     i=2 
-    random.seed(seed)
      #Get public group parameters
     p = groups.getP(i)
     q = groups.getQ(i)
@@ -49,13 +48,14 @@ def protocol(seed=0):
     #Server 
     R = pow(g,r,p)
     #Server stores R and chooses a random number n and calculates
-    n = random.randint(1,q)
+    csprng = random.SystemRandom()
+    n = csprng.randint(1,q)
     N = pow(g,n,p)
     # Server sends N to the Client
 
     #Client
     #Client knows pw and r
-    v = random.randint(1,q)
+    v = csprng.randint(1,q)
     t = pow(N,v,p)
     #Hashing H1(g,g^r,t,N), Remark: For simplicity instead of g^r we use R
     g_bytes = g.to_bytes(n_bytes,'big')
